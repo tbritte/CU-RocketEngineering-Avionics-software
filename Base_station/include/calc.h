@@ -21,4 +21,6 @@ struct vert_tri{
 
 //function macros
 struct hor_triangle get_hor_triangle(struct GPS_data lat_long, float init_lat, float init_lon);
-int get_move_distance(float pre_angle, float cur_angle, int motor_pot);
+int get_horz_move_distance(float pre_angle, float cur_angle, int motor_pot);
+struct vert_tri get_vert_triangle(float base_rocket, struct GPS_data height);
+int get_vert_move_distance(float pre_angle, float cur_angle, int motor_pot);

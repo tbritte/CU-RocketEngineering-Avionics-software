@@ -1,5 +1,4 @@
 #include "calc.h"
-
 struct hor_triangle get_hor_triangle(struct GPS_data lat_long, float init_lat, float init_lon){
     int lat_sign;
     struct hor_triangle tri;
@@ -29,19 +28,30 @@ struct hor_triangle get_hor_triangle(struct GPS_data lat_long, float init_lat, f
     tri.angle = tri.angle * lat_sign;
     return tri;
 }
-
 struct vert_tri get_vert_triangle(float base_rocket, struct GPS_data height){
     struct vert_tri tri;
     tri.rocket_ground = height.height;
     tri.rocketground_base = base_rocket;
+    // gets the hypot of the vertical triangle 
     tri.base_rocket = pow(tri.rocket_ground,2) + pow(tri.rocketground_base,2);
     tri.base_rocket = sqrt(tri.base_rocket);
-    
+    // gets the angle for the vertical motor
+    // uses law of cosines
+    // cos^-1(base_rocket^2 + rocketground_base^2 - rocket_ground^2) / (2 * rocketground_base * base_rocket)  
+    tri.angle = (pow(tri.base_rocket,2) + pow(tri.rocketground_base,2) - pow(tri.rocket_ground,2));
+    tri.angle = tri.angle / (2 * tri.rocketground_base * tri.base_rocket);
+    tri.angle = acos(tri.angle);
+    return tri;
 }
-
-int get_move_distance(float pre_angle, float cur_angle, int motor_pot){
+int get_horz_move_distance(float pre_angle, float cur_angle, int motor_pot){
     int step_dis;
     step_dis = (int)((pre_angle - cur_angle) / STEP_angle);
     step_dis = motor_pot + step_dis;
     return step_dis;
+}
+int get_vert_move_distance(float pre_angle, float cur_angle, int motor_pot){
+    int move_dist;
+    move_dist = (int)(cur_angle - pre_angle);
+    move_dist = motor_pot + move_dist;
+    return move_dist;
 }
